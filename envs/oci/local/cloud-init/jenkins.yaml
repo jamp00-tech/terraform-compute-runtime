@@ -1,0 +1,37 @@
+#cloud-config
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - git
+  - yum-utils
+
+runcmd:
+  # Install Docker CE repo
+  - dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+  # Install Docker Engine
+  - dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+  # Enable and start Docker
+  - systemctl enable --now docker
+
+  # Allow opc user to run Docker
+  - usermod -aG docker opc
+ 
+  # abrir puerto Jenkins en firewalld
+  - firewall-cmd --permanent --add-port=8080/tcp
+  - firewall-cmd --reload
+
+  # Create runtime directory
+  - mkdir -p /opt/app-runtime
+
+  # Clone Jenkins repo
+  - git clone https://github.com/jamp00-tech/jenkins-local-infra.git /opt/app-runtime/jenkins
+
+  # Start Jenkins from repo
+  - cd /opt/app-runtime/jenkins && docker compose up -d --build
+
+  # Save basic init log
+  - echo "Jenkins initialized from repo with Docker Engine" > /opt/app-runtime/init.log

@@ -1,0 +1,56 @@
+############################################
+# OCI AUTH / PROVIDER
+############################################
+
+region           = "sa-saopaulo-1"
+tenancy_ocid     = "ocid1.tenancy.oc1..example"
+user_ocid        = "ocid1.user.oc1..example"
+fingerprint      = "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
+private_key_path = "/var/jenkins_home/.oci/oci_api_key.pem"
+
+############################################
+# GENERAL
+############################################
+
+app_name = "spring-boot-jwt-kafka"
+env      = "dev"
+
+############################################
+# OCI INFRA
+############################################
+
+compartment_ocid = "ocid1.compartment.oc1..example"
+
+############################################
+# NETWORK
+############################################
+
+vcn_cidr    = "10.10.0.0/16"
+subnet_cidr = "10.10.1.0/24"
+
+############################################
+# COMPUTE
+############################################
+
+shape            = "VM.Standard.A1.Flex"
+ocpus            = 1
+memory_gb        = 4
+boot_volume_size = 50
+
+############################################
+# ACCESS
+############################################
+
+ssh_public_key = "ssh-rsa your-public-key"
+
+############################################
+# CLOUD INIT
+############################################
+
+cloud_init_file = "cloud-init/docker-host.yaml"
+
+############################################
+# APPLICATION
+############################################
+
+app_port = 8080

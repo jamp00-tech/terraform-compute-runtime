@@ -1,6 +1,16 @@
 ############################################
 # PROVIDER
 ############################################
+terraform {
+  required_version = ">= 1.5.0"
+
+  required_providers {
+    oci = {
+      source  = "oracle/oci"
+      version = ">= 6.0.0"
+    }
+  }
+}
 
 provider "oci" {
   region           = var.region
@@ -56,16 +66,4 @@ module "compute_runtime" {
   # APP
   ##########################################
   app_port = var.app_port
-}
-
-############################################
-# OUTPUTS (propagación)
-############################################
-
-output "public_ip" {
-  value = module.compute_runtime.public_ip
-}
-
-output "app_url" {
-  value = module.compute_runtime.app_url
 }
