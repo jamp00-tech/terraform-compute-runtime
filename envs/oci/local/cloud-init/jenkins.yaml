@@ -38,8 +38,3 @@ runcmd:
   # Save basic init log
   - echo "Jenkins initialized from repo with Docker Engine" > /opt/app-runtime/init.log
 
-  # Open Jenkins port in OS firewall
-  - systemctl enable --now firewalld
-  - sleep 10
-  - firewall-cmd --permanent --add-port=8080/tcp
-  - firewall-cmd --reload
