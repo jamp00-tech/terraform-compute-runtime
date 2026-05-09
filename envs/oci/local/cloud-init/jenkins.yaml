@@ -33,7 +33,7 @@ runcmd:
   - sudo -u opc git config --global --add safe.directory /opt/app-runtime/jenkins
 
   # Start Jenkins from repo using Docker group id dynamically
-  - cd /opt/app-runtime/jenkins && DOCKER_GID=$(getent group docker | cut -d: -f3) docker compose up -d --build
+  - 'cd /opt/app-runtime/jenkins && DOCKER_GID=$(getent group docker | cut -d: -f3) docker compose up -d --build'
 
   # Save basic init log
   - echo "Jenkins initialized from repo with Docker Engine" > /opt/app-runtime/init.log
