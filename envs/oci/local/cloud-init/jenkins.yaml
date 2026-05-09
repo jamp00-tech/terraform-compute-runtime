@@ -16,9 +16,6 @@ runcmd:
 
   # Enable and start Docker
   - systemctl enable --now docker
-  
-  # Allow Jenkins container to use Docker socket
-  - chmod 666 /var/run/docker.sock
 
   # Allow opc user to run Docker
   - usermod -aG docker opc
@@ -35,8 +32,8 @@ runcmd:
   # Mark Jenkins repo as safe for opc user
   - sudo -u opc git config --global --add safe.directory /opt/app-runtime/jenkins
 
-  # Start Jenkins from repo
-  - cd /opt/app-runtime/jenkins && docker compose up -d --build
+  # Start Jenkins from repo using Docker group id dynamically
+  - cd /opt/app-runtime/jenkins && DOCKER_GID=$(getent group docker | cut -d: -f3) docker compose up -d --build
 
   # Save basic init log
   - echo "Jenkins initialized from repo with Docker Engine" > /opt/app-runtime/init.log
