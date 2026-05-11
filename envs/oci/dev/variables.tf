@@ -105,6 +105,27 @@ variable "image_tag" {
   type        = string
 }
 
+variable "container_port" {
+  description = "Docker port to deploy"
+  type        = string
+}
+
+variable "ocir_registry" {
+  type = string
+}
+
+variable "ocir_namespace" {
+  type = string
+}
+
+variable "ocir_username_secret_id" {
+  type = string
+}
+
+variable "ocir_token_secret_id" {
+  type = string
+}
+
 
 ############################################
 # APPLICATION

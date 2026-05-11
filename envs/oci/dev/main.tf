@@ -53,7 +53,12 @@ module "development_vm" {
   ssh_public_key  = var.ssh_public_key
   
   cloud_init_content = templatefile(var.cloud_init_file, {
-    app_name  = var.app_name
-    image_tag = var.image_tag
+	  app_name                = var.app_name
+	  image_tag               = var.image_tag
+	  container_port          = var.app_port
+	  ocir_registry           = var.ocir_registry
+	  ocir_namespace          = var.ocir_namespace
+	  ocir_username_secret_id = var.ocir_username_secret_id
+	  ocir_token_secret_id    = var.ocir_token_secret_id
   })
 }
