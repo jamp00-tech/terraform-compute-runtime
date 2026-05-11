@@ -36,7 +36,7 @@ resource "oci_core_instance" "vm" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data           = base64encode(file(var.cloud_init_file))
+    user_data           = base64encode(var.cloud_init_content)
   }
 
   source_details {

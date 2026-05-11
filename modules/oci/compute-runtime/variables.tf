@@ -58,7 +58,7 @@ variable "ssh_public_key" {
 # CLOUD INIT
 ############################################
 
-variable "cloud_init_file" {
-  description = "Path to cloud-init file"
+variable "cloud_init_content" {
+  description = "Rendered cloud-init content"
   type        = string
 }
