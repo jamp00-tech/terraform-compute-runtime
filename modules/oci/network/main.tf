@@ -1,18 +1,16 @@
 ############################################
 # VCN (Virtual Cloud Network)
 ############################################
-
 resource "oci_core_vcn" "main" {
-  cidr_block     = var.vcn_cidr
+  cidr_block     = "10.0.0.0/16"
   compartment_id = var.compartment_ocid
   display_name   = "${var.network_name}-vcn"
-  dns_label      = var.vcn_dns_label
+  dns_label      = "vcndev"
 }
 
 ############################################
 # INTERNET GATEWAY
 ############################################
-
 resource "oci_core_internet_gateway" "igw" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.main.id
@@ -23,7 +21,6 @@ resource "oci_core_internet_gateway" "igw" {
 ############################################
 # ROUTE TABLE
 ############################################
-
 resource "oci_core_route_table" "public_rt" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.main.id
@@ -39,7 +36,6 @@ resource "oci_core_route_table" "public_rt" {
 ############################################
 # SECURITY LIST
 ############################################
-
 resource "oci_core_security_list" "public_sl" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.main.id
@@ -50,7 +46,6 @@ resource "oci_core_security_list" "public_sl" {
     destination = "0.0.0.0/0"
     protocol    = "all"
   }
-
   # SSH
   ingress_security_rules {
     protocol = "6"
@@ -61,7 +56,6 @@ resource "oci_core_security_list" "public_sl" {
       max = 22
     }
   }
-
   # Application / Jenkins HTTP port
   ingress_security_rules {
     protocol = "6"
@@ -77,13 +71,12 @@ resource "oci_core_security_list" "public_sl" {
 ############################################
 # PUBLIC SUBNET
 ############################################
-
 resource "oci_core_subnet" "public_subnet" {
-  cidr_block                 = var.subnet_cidr
+  cidr_block                 = "10.0.1.0/24"
   compartment_id             = var.compartment_ocid
   vcn_id                     = oci_core_vcn.main.id
   display_name               = "${var.network_name}-public-subnet"
-  dns_label                  = var.subnet_dns_label
+  dns_label                  = "subnetdev"
   route_table_id             = oci_core_route_table.public_rt.id
   security_list_ids          = [oci_core_security_list.public_sl.id]
   prohibit_public_ip_on_vnic = false
