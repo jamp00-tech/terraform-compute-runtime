@@ -51,5 +51,9 @@ module "development_vm" {
   boot_volume_size = var.boot_volume_size
 
   ssh_public_key  = var.ssh_public_key
-  cloud_init_file = var.cloud_init_file
+  
+  cloud_init_content = templatefile(var.cloud_init_file, {
+    app_name  = var.app_name
+    image_tag = var.image_tag
+  })
 }
