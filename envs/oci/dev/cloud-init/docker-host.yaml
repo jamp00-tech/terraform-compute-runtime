@@ -5,19 +5,64 @@ package_upgrade: true
 
 packages:
   - git
+  - curl
+  - unzip
+  - python3
   - docker
 
+write_files:
+  - path: /opt/app-runtime/deploy.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      set -e
+
+      APP_NAME="${app_name}"
+      FULL_IMAGE="${full_image}"
+      CONTAINER_PORT="${container_port}"
+      OCIR_REGISTRY="${ocir_registry}"
+      OCIR_USERNAME_SECRET_ID="${ocir_username_secret_id}"
+      OCIR_TOKEN_SECRET_ID="${ocir_token_secret_id}"
+
+      systemctl enable docker
+      systemctl start docker
+      usermod -aG docker opc || true
+
+      if ! command -v oci >/dev/null 2>&1; then
+        curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh -o /tmp/install_oci.sh
+        bash /tmp/install_oci.sh --accept-all-defaults
+        export PATH="$PATH:/root/bin"
+      fi
+
+      OCIR_USERNAME=$(oci secrets secret-bundle get \
+        --auth instance_principal \
+        --secret-id "$OCIR_USERNAME_SECRET_ID" \
+        --query 'data."secret-bundle-content".content' \
+        --raw-output 2>/dev/null | base64 -d)
+
+      OCIR_TOKEN=$(oci secrets secret-bundle get \
+        --auth instance_principal \
+        --secret-id "$OCIR_TOKEN_SECRET_ID" \
+        --query 'data."secret-bundle-content".content' \
+        --raw-output 2>/dev/null | base64 -d)
+
+      echo "$OCIR_TOKEN" | docker login "$OCIR_REGISTRY" \
+        -u "$OCIR_USERNAME" \
+        --password-stdin
+
+      docker pull "$FULL_IMAGE"
+
+      docker rm -f "$APP_NAME" || true
+
+      docker run -d \
+        --name "$APP_NAME" \
+        --restart unless-stopped \
+        -p 8080:"$CONTAINER_PORT" \
+        "$FULL_IMAGE"
+
+      echo "App deployed successfully: $FULL_IMAGE" > /opt/app-runtime/init.log
+
 runcmd:
-  # Enable and start Docker
-  - systemctl enable docker
-  - systemctl start docker
-
-  # Allow opc user to run Docker
-  - usermod -aG docker opc
-
-  # Create runtime directory
   - mkdir -p /opt/app-runtime
-
-  # Basic validation log
-  - echo "Docker host initialized successfully" > /opt/app-runtime/init.log
-  
+  - /opt/app-runtime/deploy.sh
+ 
