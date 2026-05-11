@@ -18,11 +18,12 @@ write_files:
       set -e
 
       APP_NAME="${app_name}"
-      FULL_IMAGE="${full_image}"
       CONTAINER_PORT="${container_port}"
       OCIR_REGISTRY="${ocir_registry}"
       OCIR_USERNAME_SECRET_ID="${ocir_username_secret_id}"
       OCIR_TOKEN_SECRET_ID="${ocir_token_secret_id}"
+
+      FULL_IMAGE="${OCIR_REGISTRY}/${OCIR_NAMESPACE}/${app_name}:${image_tag}"
 
       systemctl enable docker
       systemctl start docker
