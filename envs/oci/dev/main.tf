@@ -1,6 +1,7 @@
 ############################################
 # PROVIDER
 ############################################
+
 terraform {
   required_version = ">= 1.5.0"
 
@@ -21,49 +22,34 @@ provider "oci" {
 }
 
 ############################################
-# MODULE CALL
+# NETWORK MODULE
 ############################################
 
-module "compute_runtime" {
+module "network" {
+  source = "../../../modules/oci/network"
+
+  network_name     = var.network_name
+  compartment_ocid = var.compartment_ocid
+  app_port = var.app_port
+}
+
+############################################
+# DEVELOPMENT VM
+############################################
+
+module "development_vm" {
   source = "../../../modules/oci/compute-runtime"
 
-  ##########################################
-  # GENERAL
-  ##########################################
-  app_name = var.app_name
-  env      = var.env
-
-  ##########################################
-  # OCI
-  ##########################################
+  instance_name    = var.app_name
   compartment_ocid = var.compartment_ocid
 
-  ##########################################
-  # NETWORK
-  ##########################################
-  vcn_cidr    = var.vcn_cidr
-  subnet_cidr = var.subnet_cidr
+  subnet_id = module.network.subnet_id
 
-  ##########################################
-  # COMPUTE
-  ##########################################
-  shape             = var.shape
-  ocpus             = var.ocpus
-  memory_gb         = var.memory_gb
-  boot_volume_size  = var.boot_volume_size
+  shape            = var.shape
+  ocpus            = var.ocpus
+  memory_gb        = var.memory_gb
+  boot_volume_size = var.boot_volume_size
 
-  ##########################################
-  # ACCESS
-  ##########################################
-  ssh_public_key = var.ssh_public_key
-
-  ##########################################
-  # CLOUD INIT
-  ##########################################
+  ssh_public_key  = var.ssh_public_key
   cloud_init_file = var.cloud_init_file
-
-  ##########################################
-  # APP
-  ##########################################
-  app_port = var.app_port
 }

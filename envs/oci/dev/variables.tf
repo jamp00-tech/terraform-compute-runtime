@@ -57,13 +57,6 @@ variable "compartment_ocid" {
 variable "vcn_cidr" {
   description = "VCN CIDR"
   type        = string
-  default     = "10.10.0.0/16"
-}
-
-variable "subnet_cidr" {
-  description = "Subnet CIDR"
-  type        = string
-  default     = "10.10.1.0/24"
 }
 
 ############################################
@@ -73,25 +66,21 @@ variable "subnet_cidr" {
 variable "shape" {
   description = "Instance shape"
   type        = string
-  default     = "VM.Standard.A1.Flex"
 }
 
 variable "ocpus" {
   description = "Number of CPUs"
   type        = number
-  default     = 1
 }
 
 variable "memory_gb" {
   description = "Memory in GB"
   type        = number
-  default     = 4
 }
 
 variable "boot_volume_size" {
   description = "Boot volume size"
   type        = number
-  default     = 50
 }
 
 ############################################
@@ -119,5 +108,12 @@ variable "cloud_init_file" {
 variable "app_port" {
   description = "Application port"
   type        = number
-  default     = 8080
+}
+
+############################################
+# NETWORK
+############################################
+
+variable "network_name" {
+  type = string
 }
