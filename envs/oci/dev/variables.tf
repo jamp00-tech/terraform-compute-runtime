@@ -132,6 +132,11 @@ variable "private_key" {
   sensitive   = true
 }
 
+variable "deploy_mode" {
+  description = "Deploy mode docker-compose or docker run"
+  type = string
+}
+
 ############################################
 # APPLICATION
 ############################################
