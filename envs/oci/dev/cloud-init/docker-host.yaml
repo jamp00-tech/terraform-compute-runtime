@@ -56,6 +56,10 @@ write_files:
       
       if [ -f /opt/app-runtime/docker-compose.yml ]; then
         docker network create app-network || true
+
+        cd /opt/app-runtime
+        docker compose down || true
+        docker compose up -d
       
         docker run -d \
           --name "$APP_NAME" \
@@ -63,11 +67,7 @@ write_files:
           --restart unless-stopped \
           -p 8080:"$CONTAINER_PORT" \
           "$FULL_IMAGE"
-      
-        cd /opt/app-runtime
-        docker compose down || true
-        docker compose up -d
-      
+
       else
         docker run -d \
           --name "$APP_NAME" \
