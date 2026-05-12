@@ -60,5 +60,6 @@ module "development_vm" {
 	  ocir_namespace          = var.ocir_namespace
 	  ocir_username_secret_id = var.ocir_username_secret_id
 	  ocir_token_secret_id    = var.ocir_token_secret_id
+	  deploy_mode             = var.deploy_mode
   })
 }
