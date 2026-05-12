@@ -53,28 +53,35 @@ write_files:
       docker pull "$FULL_IMAGE"
 
       docker rm -f "$APP_NAME" || true
-      
-      if [ -f /opt/app-runtime/docker-compose.yml ]; then
-        docker network create app-network || true
+      docker rm -f "$APP_NAME-tmp" || true
 
-        cd /opt/app-runtime
-        docker compose down || true
+      APP_RUNTIME_DIR="/opt/app-runtime"
+      COMPOSE_FILE="$APP_RUNTIME_DIR/docker-compose.yml"
+
+      mkdir -p "$APP_RUNTIME_DIR"
+      rm -f "$COMPOSE_FILE"
+
+      docker network create app-network || true
+
+      docker create --name "$APP_NAME-tmp" "$FULL_IMAGE"
+
+      if docker cp "$APP_NAME-tmp:/tmp/docker-compose.yml" "$COMPOSE_FILE" 2>/dev/null; then
+        echo "docker-compose.yml extracted from image"
+
+        cd "$APP_RUNTIME_DIR"
         docker compose up -d
-      
-        docker run -d \
-          --name "$APP_NAME" \
-          --network app-network \
-          --restart unless-stopped \
-          -p 8080:"$CONTAINER_PORT" \
-          "$FULL_IMAGE"
-
       else
-        docker run -d \
-          --name "$APP_NAME" \
-          --restart unless-stopped \
-          -p 8080:"$CONTAINER_PORT" \
-          "$FULL_IMAGE"
-      fi      
+        echo "No docker-compose.yml found inside image. Skipping compose deploy."
+      fi
+
+      docker rm -f "$APP_NAME-tmp" || true
+
+      docker run -d \
+        --name "$APP_NAME" \
+        --restart unless-stopped \
+        --network app-network \
+        -p 8080:"$CONTAINER_PORT" \
+        "$FULL_IMAGE"
 
       echo "App deployed successfully: $FULL_IMAGE" > /opt/app-runtime/init.log
 
