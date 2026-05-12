@@ -126,6 +126,11 @@ variable "ocir_token_secret_id" {
   type = string
 }
 
+variable "private_key" {
+  description = "OCI API private key content"
+  type        = string
+  sensitive   = true
+}
 
 ############################################
 # APPLICATION
