@@ -22,8 +22,9 @@ write_files:
       OCIR_REGISTRY="${ocir_registry}"
       OCIR_USERNAME_SECRET_ID="${ocir_username_secret_id}"
       OCIR_TOKEN_SECRET_ID="${ocir_token_secret_id}"
+      OCIR_NAMESPACE="${ocir_namespace}"
 
-      FULL_IMAGE="${OCIR_REGISTRY}/${OCIR_NAMESPACE}/${app_name}:${image_tag}"
+      FULL_IMAGE="$OCIR_REGISTRY/$OCIR_NAMESPACE/$APP_NAME:${image_tag}"
 
       systemctl enable docker
       systemctl start docker
