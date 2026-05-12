@@ -18,7 +18,6 @@ write_files:
       set -e
 
       APP_NAME="${app_name}"
-      DEPLOY_MODE="${deploy_mode}"
 
       CONTAINER_PORT="${container_port}"
       OCIR_REGISTRY="${ocir_registry}"
@@ -54,21 +53,14 @@ write_files:
 
       docker pull "$FULL_IMAGE"
 
-      if [ "$DEPLOY_MODE" = "docker-compose" ]; then
- 
-          docker compose down || true
-          docker compose up -d
+      docker rm -f "$APP_NAME" || true
 
-      else
+      docker run -d \
+        --name "$APP_NAME" \
+        --restart unless-stopped \
+        -p 8080:"$CONTAINER_PORT" \
+         "$FULL_IMAGE"
 
-          docker rm -f "$APP_NAME" || true
-
-          docker run -d \
-            --name "$APP_NAME" \
-            --restart unless-stopped \
-            -p 8080:"$CONTAINER_PORT" \
-            "$FULL_IMAGE"
-      fi
       echo "App deployed successfully: $FULL_IMAGE" > /opt/app-runtime/init.log
 
 runcmd:
