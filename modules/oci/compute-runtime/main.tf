@@ -43,6 +43,5 @@ resource "oci_core_instance" "vm" {
     source_type             = "image"
     source_id               = data.oci_core_images.oracle_linux.images[0].id
     boot_volume_size_in_gbs = var.boot_volume_size
-	preserve_boot_volume    = false
   }
 }
