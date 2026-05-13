@@ -45,6 +45,26 @@ variable "boot_volume_size" {
   type        = number
 }
 
+variable "app_name" {
+  type = string
+}
+
+variable "image_tag" {
+  type = string
+}
+
+variable "ocir_registry" {
+  type = string
+}
+
+variable "ocir_namespace" {
+  type = string
+}
+
+variable "environment" {
+  type = string
+}
+
 ############################################
 # ACCESS
 ############################################

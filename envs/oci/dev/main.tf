@@ -14,11 +14,11 @@ terraform {
 }
 
 provider "oci" {
-  region           = var.region
-  tenancy_ocid     = var.tenancy_ocid
-  user_ocid        = var.user_ocid
-  fingerprint      = var.fingerprint
-  private_key      = var.private_key
+  region       = var.region
+  tenancy_ocid = var.tenancy_ocid
+  user_ocid    = var.user_ocid
+  fingerprint  = var.fingerprint
+  private_key  = var.private_key
 }
 
 ############################################
@@ -30,7 +30,7 @@ module "network" {
 
   network_name     = var.network_name
   compartment_ocid = var.compartment_ocid
-  app_port = var.app_port
+  app_port         = var.app_port
 }
 
 ############################################
@@ -57,6 +57,12 @@ module "dev_vm" {
   boot_volume_size = var.boot_volume_size
 
   ssh_public_key = var.ssh_public_key
+
+  app_name       = each.key
+  image_tag      = each.value.image_tag
+  ocir_registry  = var.ocir_registry
+  ocir_namespace = var.ocir_namespace
+  environment    = var.env
 
   cloud_init_content = templatefile(var.cloud_init_file, {
     app_name                = each.key
