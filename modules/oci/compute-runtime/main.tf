@@ -44,4 +44,11 @@ resource "oci_core_instance" "vm" {
     source_id               = data.oci_core_images.oracle_linux.images[0].id
     boot_volume_size_in_gbs = var.boot_volume_size
   }
+
+  freeform_tags = {
+    AppName     = var.app_name
+    ImageTag    = var.image_tag
+    FullImage   = "${var.ocir_registry}/${var.ocir_namespace}/${var.app_name}:${var.image_tag}"
+    Environment = var.environment
+  }
 }
