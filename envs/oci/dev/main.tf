@@ -38,11 +38,7 @@ module "network" {
 ############################################
 
 module "dev_vm" {
-  for_each = {
-    (var.app_name) = {
-      image_tag = var.image_tag
-    }
-  }
+  for_each = var.apps
 
   source = "../../../modules/oci/compute-runtime"
 
