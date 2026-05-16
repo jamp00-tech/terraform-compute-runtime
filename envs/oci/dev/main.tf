@@ -38,11 +38,9 @@ module "network" {
 ############################################
 
 module "dev_vm" {
-  for_each = var.apps
-
   source = "../../../modules/oci/compute-runtime"
 
-  instance_name    = each.key
+  instance_name    = app_name
   compartment_ocid = var.compartment_ocid
 
   subnet_id = module.network.subnet_id
@@ -54,15 +52,15 @@ module "dev_vm" {
 
   ssh_public_key = var.ssh_public_key
 
-  app_name       = each.key
-  image_tag      = each.value.image_tag
+  app_name       = var.app_name
+  image_tag      = var.image_tag
   ocir_registry  = var.ocir_registry
   ocir_namespace = var.ocir_namespace
   environment    = var.env
 
   cloud_init_content = templatefile(var.cloud_init_file, {
-    app_name                = each.key
-    image_tag               = each.value.image_tag
+    app_name                = var.app_name
+    image_tag               = var.image_tag
     container_port          = var.app_port
     ocir_registry           = var.ocir_registry
     ocir_namespace          = var.ocir_namespace
