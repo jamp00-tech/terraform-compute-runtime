@@ -50,5 +50,6 @@ resource "oci_core_instance" "vm" {
     ImageTag    = var.image_tag
     FullImage   = "${var.ocir_registry}/${var.ocir_namespace}/${var.app_name}:${var.image_tag}"
     Environment = var.environment
+	namespace   = var.ocir_namespace
   }
 }
