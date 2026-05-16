@@ -21,3 +21,16 @@ variable "app_port" {
   description = "Main public application port"
   type        = number
 }
+
+
+variable "app_name" {
+  type = string
+}
+
+variable "subnet_cidr_block" {
+  type = string
+}
+
+variable "subnet_dns_label" {
+  type = string
+}

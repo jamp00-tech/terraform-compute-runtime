@@ -1,21 +1,26 @@
 ############################################
-# VCN (Virtual Cloud Network)
+# EXISTING VCN
 ############################################
-resource "oci_core_vcn" "main" {
-  cidr_block     = "10.0.0.0/16"
+data "oci_core_vcns" "shared" {
   compartment_id = var.compartment_ocid
-  display_name   = "${var.network_name}-vcn"
-  dns_label      = "vcndev"
+
+  filter {
+    name   = "display_name"
+    values = ["${var.network_name}-vcn"]
+  }
 }
 
 ############################################
-# INTERNET GATEWAY
+# EXISTING INTERNET GATEWAY
 ############################################
-resource "oci_core_internet_gateway" "igw" {
+data "oci_core_internet_gateways" "shared" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.main.id
-  display_name   = "${var.network_name}-igw"
-  enabled        = true
+  vcn_id         = data.oci_core_vcns.shared.virtual_networks[0].id
+
+  filter {
+    name   = "display_name"
+    values = ["${var.network_name}-igw"]
+  }
 }
 
 ############################################
@@ -23,13 +28,13 @@ resource "oci_core_internet_gateway" "igw" {
 ############################################
 resource "oci_core_route_table" "public_rt" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.main.id
-  display_name   = "${var.network_name}-public-rt"
+  vcn_id         = data.oci_core_vcns.shared.virtual_networks[0].id
+  display_name   = "${var.app_name}-public-rt"
 
   route_rules {
     destination       = "0.0.0.0/0"
     destination_type  = "CIDR_BLOCK"
-    network_entity_id = oci_core_internet_gateway.igw.id
+    network_entity_id = data.oci_core_internet_gateways.shared.gateways[0].id
   }
 }
 
@@ -38,15 +43,14 @@ resource "oci_core_route_table" "public_rt" {
 ############################################
 resource "oci_core_security_list" "public_sl" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.main.id
-  display_name   = "${var.network_name}-public-sl"
+  vcn_id         = data.oci_core_vcns.shared.virtual_networks[0].id
+  display_name   = "${var.app_name}-public-sl"
 
-  # Outbound traffic
   egress_security_rules {
     destination = "0.0.0.0/0"
     protocol    = "all"
   }
-  # SSH
+
   ingress_security_rules {
     protocol = "6"
     source   = "0.0.0.0/0"
@@ -56,7 +60,7 @@ resource "oci_core_security_list" "public_sl" {
       max = 22
     }
   }
-  # Application / Jenkins HTTP port
+
   ingress_security_rules {
     protocol = "6"
     source   = "0.0.0.0/0"
@@ -72,11 +76,11 @@ resource "oci_core_security_list" "public_sl" {
 # PUBLIC SUBNET
 ############################################
 resource "oci_core_subnet" "public_subnet" {
-  cidr_block                 = "10.0.1.0/24"
+  cidr_block                 = var.subnet_cidr_block
   compartment_id             = var.compartment_ocid
-  vcn_id                     = oci_core_vcn.main.id
-  display_name               = "${var.network_name}-public-subnet"
-  dns_label                  = "subnetdev"
+  vcn_id                     = data.oci_core_vcns.shared.virtual_networks[0].id
+  display_name               = "${var.app_name}-public-subnet"
+  dns_label                  = var.subnet_dns_label
   route_table_id             = oci_core_route_table.public_rt.id
   security_list_ids          = [oci_core_security_list.public_sl.id]
   prohibit_public_ip_on_vnic = false
