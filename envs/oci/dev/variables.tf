@@ -54,8 +54,18 @@ variable "compartment_ocid" {
 # NETWORK
 ############################################
 
-variable "vcn_cidr" {
-  description = "VCN CIDR"
+variable "subnet_name" {
+  description = "Existing public subnet name"
+  type        = string
+}
+
+variable "internet_gateway_name" {
+  description = "Existing internet gateway display name"
+  type        = string
+}
+
+variable "app_subnet_cidr" {
+  description = "CIDR block for the application subnet"
   type        = string
 }
 
