@@ -128,15 +128,10 @@ variable "private_key" {
   sensitive   = true
 }
 
-variable "apps" {
-  description = "Applications to deploy"
-  
-  type = map(object({
-    image_tag = string
-  }))
-  
-  default = {}
+variable "image_tag" {
+  type = string
 }
+
 
 ############################################
 # APPLICATION

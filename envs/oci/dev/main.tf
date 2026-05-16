@@ -40,7 +40,7 @@ module "network" {
 module "dev_vm" {
   source = "../../../modules/oci/compute-runtime"
 
-  instance_name    = app_name
+  instance_name    = var.app_name
   compartment_ocid = var.compartment_ocid
 
   subnet_id = module.network.subnet_id
