@@ -100,10 +100,6 @@ variable "cloud_init_file" {
   description = "Cloud-init file path"
   type        = string
 }
-variable "image_tag" {
-  description = "Docker image tag to deploy"
-  type        = string
-}
 
 variable "container_port" {
   description = "Docker port to deploy"
