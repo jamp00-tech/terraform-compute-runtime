@@ -1,7 +1,3 @@
-############################################
-# PROVIDER
-############################################
-
 terraform {
   required_version = ">= 1.5.0"
 
@@ -95,9 +91,9 @@ resource "oci_core_subnet" "app_subnet" {
   compartment_id = var.compartment_ocid
   vcn_id         = data.oci_core_vcns.main.virtual_networks[0].id
 
-  cidr_block     = var.app_subnet_cidr
-  display_name   = "${var.app_name}-subnet"
-  dns_label      = replace(var.app_name, "-", "")
+  cidr_block   = var.app_subnet_cidr
+  display_name = "${var.app_name}-subnet"
+  dns_label    = "appsubnet"
 
   route_table_id    = oci_core_route_table.app_route_table.id
   security_list_ids = [oci_core_security_list.app_security_list.id]
@@ -106,7 +102,7 @@ resource "oci_core_subnet" "app_subnet" {
 }
 
 ############################################
-# DEVELOPMENT VM
+# VM
 ############################################
 
 module "dev_vm" {
