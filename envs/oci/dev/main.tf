@@ -85,7 +85,7 @@ resource "oci_core_subnet" "app_subnet" {
 
   cidr_block   = var.app_subnet_cidr
   display_name = "${var.app_name}-subnet"
-  dns_label    = "appsubnet"
+  dns_label    = "${var.app_name}dns"
 
   route_table_id    = oci_core_route_table.app_route_table.id
   security_list_ids = [oci_core_security_list.app_security_list.id]
