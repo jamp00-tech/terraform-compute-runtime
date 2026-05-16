@@ -2,7 +2,6 @@ terraform {
   backend "oci" {
     bucket    = "terraform-state"
     namespace = "greg14puj5pf"
-    key       = "oci/dev/terraform.tfstate"
     region    = "sa-saopaulo-1"
     auth      = "APIKey"
 
