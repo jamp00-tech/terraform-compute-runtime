@@ -1,7 +1,3 @@
-############################################
-# CLOUD INIT
-############################################
-
 variable "cloud_init_file" {
   type = string
 }
@@ -9,10 +5,6 @@ variable "cloud_init_file" {
 variable "container_port" {
   type = number
 }
-
-############################################
-# OCIR
-############################################
 
 variable "ocir_registry" {
   type = string
@@ -29,10 +21,6 @@ variable "ocir_username_secret_id" {
 variable "ocir_token_secret_id" {
   type = string
 }
-
-############################################
-# OCI AUTH
-############################################
 
 variable "region" {
   type = string
@@ -55,17 +43,9 @@ variable "private_key" {
   sensitive = true
 }
 
-############################################
-# ACCESS
-############################################
-
 variable "ssh_public_key" {
   type = string
 }
-
-############################################
-# APP
-############################################
 
 variable "app_name" {
   type = string
@@ -83,17 +63,9 @@ variable "env" {
   type = string
 }
 
-############################################
-# OCI INFRA
-############################################
-
 variable "compartment_ocid" {
   type = string
 }
-
-############################################
-# NETWORK
-############################################
 
 variable "network_name" {
   type = string
@@ -106,10 +78,6 @@ variable "internet_gateway_name" {
 variable "app_subnet_cidr" {
   type = string
 }
-
-############################################
-# COMPUTE
-############################################
 
 variable "shape" {
   type = string

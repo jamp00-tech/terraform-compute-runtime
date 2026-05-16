@@ -17,10 +17,6 @@ provider "oci" {
   private_key  = var.private_key
 }
 
-############################################
-# EXISTING NETWORK
-############################################
-
 data "oci_core_vcns" "main" {
   compartment_id = var.compartment_ocid
 
@@ -39,22 +35,6 @@ data "oci_core_internet_gateways" "main" {
     values = [var.internet_gateway_name]
   }
 }
-
-############################################
-# APP SUBNET MAP
-############################################
-
-locals {
-  subnet_map = {
-    dev-host              = "10.10.1.0/24"
-    spring-boot-jwt-kafka = "10.10.2.0/24"
-    trading-bot           = "10.10.3.0/24"
-  }
-}
-
-############################################
-# APP NETWORK
-############################################
 
 resource "oci_core_route_table" "app_route_table" {
   compartment_id = var.compartment_ocid
@@ -103,7 +83,7 @@ resource "oci_core_subnet" "app_subnet" {
   compartment_id = var.compartment_ocid
   vcn_id         = data.oci_core_vcns.main.virtual_networks[0].id
 
-  cidr_block   = local.subnet_map[var.app_name]
+  cidr_block   = var.app_subnet_cidr
   display_name = "${var.app_name}-subnet"
   dns_label    = "appsubnet"
 
@@ -112,10 +92,6 @@ resource "oci_core_subnet" "app_subnet" {
 
   prohibit_public_ip_on_vnic = false
 }
-
-############################################
-# VM
-############################################
 
 module "dev_vm" {
   source = "../../../modules/oci/compute-runtime"
